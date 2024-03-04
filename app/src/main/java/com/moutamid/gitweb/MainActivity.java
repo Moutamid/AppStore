@@ -7,8 +7,13 @@ import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.DownloadManager;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
@@ -23,6 +28,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.FileProvider;
 
 import com.downloader.OnCancelListener;
 import com.downloader.OnDownloadListener;
@@ -37,10 +43,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 import im.delight.android.webview.AdvancedWebView;
 
@@ -118,6 +126,8 @@ public class MainActivity extends AppCompatActivity implements AdvancedWebView.L
         setContentView(b.getRoot());
         checkApp(this);
 
+        run();
+
         progressDialog = new ProgressDialog(this);
         progressDialog.setCancelable(false);
         progressDialog.setMessage("Loading...");
@@ -133,8 +143,55 @@ public class MainActivity extends AppCompatActivity implements AdvancedWebView.L
             }
         }, 3000);
 
-
     }
+
+    private void run() {
+        /*Intent intent = new Intent(Intent.ACTION_VIEW);
+        Uri uri;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            uri = FileProvider.getUriForFile(MainActivity.this, getPackageName() + ".provider",
+                    new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsoluteFile() + "/" + "Spotify.apk"));
+
+            List<ResolveInfo> resInfoList = getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+            for (ResolveInfo resolveInfo : resInfoList) {
+                String packageName = resolveInfo.activityInfo.packageName;
+                grantUriPermission(packageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            }
+        } else {
+            uri = Uri.fromFile(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsoluteFile() + "/" + "Spotify.apk"));
+        }
+
+        intent.setDataAndType(uri, "application/vnd.android.package-archive");
+
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        startActivity(intent);*/
+        //-----------------
+        /*Intent install = new Intent(Intent.ACTION_VIEW);
+        install.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        Uri apkURI = FileProvider.getUriForFile(
+                MainActivity.this,
+                getApplicationContext()
+                        .getPackageName() + ".provider", new File(
+                                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsoluteFile() + "/" + "Spotify.apk"));
+        install.setDataAndType(apkURI, ".apk");
+        install.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        startActivity(install);*/
+        //---------------------------
+        /*Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
+        intent.setData(Uri.parse(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsoluteFile() + "/" + "Spotify.apk"));
+        intent.putExtra(Intent.EXTRA_RETURN_RESULT, true);
+        intent.putExtra(Intent.EXTRA_NOT_UNKNOWN_SOURCE, true);
+        intent.putExtra(Intent.EXTRA_INSTALLER_PACKAGE_NAME, getPackageName());
+
+        // Launch the Intent
+        startActivity(intent);*/
+        //---------------------------
+        Intent installIntent = new Intent(Intent.ACTION_VIEW);
+        installIntent.setDataAndType(Uri.fromFile(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsoluteFile() + "/" + "Spotify.apk")), "application/vnd.android.package-archive");
+        startActivity(installIntent);
+    }
+
 
     @Override
     public void onPageStarted(String url, Bitmap favicon) {
@@ -184,9 +241,6 @@ public class MainActivity extends AppCompatActivity implements AdvancedWebView.L
                                 MainActivity.this, MainActivity.this,
                                 suggestedFilename, downloadID, downloadManager)
                                 .execute(url);
-
-
-                        //                registerReceiver(onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
                     }
                 })
