@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements AdvancedWebView.L
 //        downloadUsingPR(url, suggestedFilename);
 
         new Builder(MainActivity.this)
-                .setMessage("Do you want to download " + suggestedFilename + " ?")
+                .setMessage("Do you want to download " + suggestedFilename.replace(".apk", "") + " ?")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

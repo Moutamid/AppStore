@@ -55,7 +55,7 @@ public class DownloadFileFromURL extends AsyncTask<String, String, String> {
         progressText = dialog.findViewById(R.id.progressText);
         button = dialog.findViewById(R.id.cancelBtn);
 
-        nameText.setText(suggestedFilename);
+        nameText.setText(suggestedFilename.replace(".apk", ""));
         progressText.setText("Downloading...0%");
 
         button.setOnClickListener(v -> {
