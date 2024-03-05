@@ -280,7 +280,6 @@ public class MainActivity extends AppCompatActivity implements AdvancedWebView.L
                                 MainActivity.this, MainActivity.this,
                                 suggestedFilename, downloadID, downloadManager)
                                 .execute(url);
-
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
