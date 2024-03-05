@@ -193,6 +193,15 @@ public class DownloadFileFromURL extends AsyncTask<String, String, String> {
                             activity.runOnUiThread(() -> {
                                 Toast.makeText(context, "finished", Toast.LENGTH_SHORT).show();
 
+                                Uri uri = FileProvider.getUriForFile(context,
+                                        activity.getApplicationContext().getPackageName() + ".provider",
+                                        new File(activity.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS),fileName));
+                                Intent intent = new Intent(Intent.ACTION_VIEW);
+                                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                intent.setDataAndType(uri, "application/vnd.android.package-archive");
+                                activity.startActivity(intent);
+
 //                                Intent intent = new Intent(Intent.ACTION_VIEW);
 //                                intent.setDataAndType(Uri.parse(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsoluteFile() +"/"+ fileName), "application/vnd.android.package-archive");
 //                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -207,7 +216,7 @@ public class DownloadFileFromURL extends AsyncTask<String, String, String> {
                                 promptInstall.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                                 activity.startActivity(promptInstall);*/
 
-                                Intent intent = new Intent(Intent.ACTION_VIEW);
+                                /*Intent intent = new Intent(Intent.ACTION_VIEW);
                                 Uri uri;
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                                     uri = FileProvider.getUriForFile(context, activity.getPackageName() + ".provider",
@@ -226,7 +235,7 @@ public class DownloadFileFromURL extends AsyncTask<String, String, String> {
 
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-                                activity.startActivity(intent);
+                                activity.startActivity(intent);*/
                                 //----------------------------
 
                             });

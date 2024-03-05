@@ -20,6 +20,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.provider.Settings;
 import android.util.Log;
 import android.webkit.CookieManager;
 import android.widget.Toast;
@@ -30,6 +31,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 
+import com.downloader.BuildConfig;
 import com.downloader.OnCancelListener;
 import com.downloader.OnDownloadListener;
 import com.downloader.OnPauseListener;
@@ -53,6 +55,7 @@ import java.util.List;
 import im.delight.android.webview.AdvancedWebView;
 
 public class MainActivity extends AppCompatActivity implements AdvancedWebView.Listener {
+    private static final String TAG = "MainActivity";
 
     private ActivityMainBinding b;
     public ProgressDialog progressDialog;
@@ -187,9 +190,43 @@ public class MainActivity extends AppCompatActivity implements AdvancedWebView.L
         // Launch the Intent
         startActivity(intent);*/
         //---------------------------
-        Intent installIntent = new Intent(Intent.ACTION_VIEW);
-        installIntent.setDataAndType(Uri.fromFile(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsoluteFile() + "/" + "Spotify.apk")), "application/vnd.android.package-archive");
-        startActivity(installIntent);
+//        Intent installIntent = new Intent(Intent.ACTION_VIEW);
+//        installIntent.setDataAndType(Uri.fromFile(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsoluteFile() + "/" + "Spotify.apk")), "application/vnd.android.package-archive");
+//        startActivity(installIntent);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (!getPackageManager().canRequestPackageInstalls()) {
+                startActivity(new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, Uri.parse("package:com.moutamid.gitweb")));
+            } else {
+                /*Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
+//                intent.setDataAndType(FileProvider.getUriForFile(this, "com.moutamid.gitweb.fileprovider",
+//                        new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+//                                .getAbsoluteFile() + "/" + "Spotify.apk")),
+//                        "application/vnd.android.package-archive");
+
+
+                // Assuming you're trying to access a file in "my_external_files"
+                String authority = "com.moutamid.gitweb.fileprovider";
+                File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Spotify.apk");
+//                Uri fileUri = FileProvider.getUriForFile(MainActivity.this, authority,
+//                        new File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "Spotify.apk"));
+
+                intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                startActivity(intent);*/
+
+                /*Uri uri = FileProvider.getUriForFile(this,
+                        getApplicationContext().getPackageName() + ".provider",
+                        new File(Environment.getExternalStorageDirectory(),"Spotify.apk"));
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setDataAndType(uri, "application/vnd.android.package-archive");
+                startActivity(intent);*/
+            }
+        }
+//        Log.d(TAG, "run/219:  : " + file.exists());
     }
 
 
@@ -233,7 +270,9 @@ public class MainActivity extends AppCompatActivity implements AdvancedWebView.L
                         //DownloadManager created
                         downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
                         //Saving files in Download folder
-                        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, suggestedFilename);
+//                        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, suggestedFilename);
+                        request.setDestinationInExternalFilesDir(MainActivity.this, Environment.DIRECTORY_DOWNLOADS, suggestedFilename);
+
                         //download enqued
                         downloadID = downloadManager.enqueue(request);
 
