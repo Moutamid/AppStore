@@ -282,6 +282,7 @@ public class MainActivity extends AppCompatActivity implements AdvancedWebView.L
                                 .execute(url);
                     }
                 })
+
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
